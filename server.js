@@ -1,15 +1,24 @@
-const jsonServer = require('json-server');
- // tao may chu
- const server = jsonServer.create();
+const jsonServer = require("json-server");
+const server = jsonServer.create();
+const router = jsonServer.router("db.json");
+const middlewares = jsonServer.defaults();
 
- const router = jsonServer.router();
- const middlewares = jsonServer.defaults();
+server.use(middlewares);
 
- server.use(middlewares);
- server.use(router);
+server.use(
+  jsonServer.rewriter({
+    "/api/*": "/$1",
+    "/users/:resource/:id/show": "/:resource/:id",
+    "/products/:resource/:id/show": "/:resource/:id",
+    "/carts/:resource/:id/show": "/:resource/:id",
+    "/orders/:resource/:id/show": "/:resource/:id",
+  })
+);
+server.use(router);
 
- // lang nghe cong cua ung dung 
- server.listen(3000,()=>{
-    console.log('http://localhost3000');
- });
- module.exports = server;
+server.listen(3000, () => {
+  console.log("JSON Server is running");
+});
+
+// Export the Server API
+module.exports = server;
